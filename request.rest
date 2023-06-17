@@ -1,0 +1,26 @@
+### teste
+
+GET http://localhost:3003/ping
+
+### get all users
+GET http://localhost:3003/users
+
+### Get All Products
+
+GET http://localhost:3003/products
+
+### Get All Products by name
+
+GET http://localhost:3003/products?name=Mouse
+
+### Create Users
+
+POST http://localhost:3003/users
+content-type: application/json
+
+{
+    "id": "004",
+    "name": "Regi",
+    "email": "regis@gmail.com",
+    "password": "cheguei"
+}

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchProductsByName = exports.getAllProducts = exports.createProduct = exports.getAllUsers = exports.createUser = void 0;
-const users = [
+exports.searchProductsByName = exports.getAllProducts = exports.createProduct = exports.getAllUsers = exports.createUser = exports.products = exports.users = void 0;
+exports.users = [
     {
         id: "1",
         name: "Fulano",
@@ -17,7 +17,7 @@ const users = [
         createdAt: new Date().toISOString()
     }
 ];
-const products = [
+exports.products = [
     {
         id: "prod001",
         name: "Mouse gamer",
@@ -41,13 +41,13 @@ function createUser(id, name, email, password) {
         password,
         createdAt: new Date().toISOString()
     };
-    users.push(newUser);
+    exports.users.push(newUser);
 }
 exports.createUser = createUser;
 createUser("4", "Regiane", "regiane@gmail.com", "1235");
 console.log("Cadastro realizado com sucesso");
 function getAllUsers() {
-    const showUser = users.map((item) => item);
+    const showUser = exports.users.map((item) => item);
     console.log(showUser);
 }
 exports.getAllUsers = getAllUsers;
@@ -60,19 +60,19 @@ function createProduct(id, name, price, description, imageUrl) {
         description,
         imageUrl
     };
-    products.push(newProduct);
+    exports.products.push(newProduct);
 }
 exports.createProduct = createProduct;
 createProduct("4", "iphone", 2500, "13 pro", "sem imagem");
 console.log("Produto criado com sucesso");
 function getAllProducts() {
-    const showProducts = products.map((item) => item);
+    const showProducts = exports.products.map((item) => item);
     console.log(showProducts);
 }
 exports.getAllProducts = getAllProducts;
 getAllProducts();
 function searchProductsByName(name) {
-    const searchProduct = products.filter((product) => product.name.toLowerCase().includes(name.toLowerCase()));
+    const searchProduct = exports.products.filter((product) => product.name.toLowerCase().includes(name.toLowerCase()));
     console.log(searchProduct);
 }
 exports.searchProductsByName = searchProductsByName;
