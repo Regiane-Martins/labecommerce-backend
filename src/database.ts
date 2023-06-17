@@ -35,7 +35,7 @@ import { TUser, TProducts } from "./types";
 
 // console.table([fulano, beltrana, mouseGamer, monitor])
 
-const users: TUser[]=[
+export const users: TUser[]=[
     {
         id: "1",
         name: "Fulano",
@@ -53,7 +53,7 @@ const users: TUser[]=[
 
 ]
 
-const products: TProducts[] =[
+export const products: TProducts[] =[
     {
         id: "prod001",
         name: "Mouse gamer",
