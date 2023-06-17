@@ -12,13 +12,13 @@ app.use((0, cors_1.default)());
 app.listen(3003, () => {
     console.log("Servidor rodando na porta 3003");
 });
-app.get('/ping', (req, res) => {
+app.get("/ping", (req, res) => {
     res.send("pong");
 });
-app.get('/users', (req, res) => {
+app.get("/users", (req, res) => {
     res.status(200).send(database_1.users);
 });
-app.get('/products', (req, res) => {
+app.get("/products", (req, res) => {
     const { name } = req.query;
     let productFilter = [];
     if (name) {
@@ -30,29 +30,59 @@ app.get('/products', (req, res) => {
     }
     res.status(200).send(productFilter);
 });
-app.post('/users', (req, res) => {
+app.post("/users", (req, res) => {
     const { id, name, email, password } = req.body;
     const newUser = {
         id,
         name,
         email,
         password,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
     };
     database_1.users.push(newUser);
     res.status(201).send("Cadastro realizado com sucesso!");
     console.log(database_1.users);
 });
-app.post('/products', (req, res) => {
+app.post("/products", (req, res) => {
     const { id, name, price, description, imageUrl } = req.body;
     const newProduct = {
         id,
         name,
         price,
         description,
-        imageUrl
+        imageUrl,
     };
     database_1.products.push(newProduct);
     res.status(201).send("Produto cadastrado com sucesso!");
+});
+app.delete("/users/:id", (req, res) => {
+    const { id } = req.params;
+    const userById = database_1.users.findIndex((user) => user.id === id);
+    database_1.users.splice(userById, 1);
+    console.log(database_1.users);
+    res.status(200).send("User apagado com sucesso!");
+});
+app.delete("/products/:id", (req, res) => {
+    const { id } = req.params;
+    const productById = database_1.products.findIndex((product) => product.id === id);
+    database_1.products.splice(productById, 1);
+    console.log(database_1.products);
+    res.status(200).send("Product apagado com sucesso!");
+});
+app.put("/products/:id", (req, res) => {
+    const { id } = req.params;
+    const newId = req.body.id;
+    const newName = req.body.name;
+    const newPrice = req.body.price;
+    const newDescription = req.body.description;
+    const newImage = req.body.imageUrl;
+    const productById = database_1.products.findIndex((product) => product.id === id);
+    database_1.products[productById].id = newId;
+    database_1.products[productById].name = newName;
+    database_1.products[productById].price = newPrice;
+    database_1.products[productById].description = newDescription;
+    database_1.products[productById].imageUrl = newImage;
+    console.log(database_1.products);
+    res.status(200).send("Produto atualizado com sucesso");
 });
 //# sourceMappingURL=index.js.map

@@ -24,3 +24,24 @@ content-type: application/json
     "email": "regis@gmail.com",
     "password": "cheguei"
 }
+
+### DElete User By Id
+
+DELETE http://localhost:3003/users/u002
+
+### Delete Product by id
+
+DELETE http://localhost:3003/products/4
+
+### Edit Product by id
+
+PUT http://localhost:3003/products/4
+content-type: application/json
+
+{
+    "id": "004",
+    "name": "Regi",
+    "price": 200,
+    "description": "cheguei",
+    "imageUrl": "nao tenho"
+}
