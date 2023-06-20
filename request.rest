@@ -19,27 +19,41 @@ POST http://localhost:3003/users
 content-type: application/json
 
 {
-    "id": "004",
+    "id": "0001",
     "name": "Regi",
-    "email": "regis@gmail.com",
+    "email": "beltrana@email.com",
     "password": "cheguei"
 }
 
-### DElete User By Id
+### Create Products
 
-DELETE http://localhost:3003/users/u002
-
-### Delete Product by id
-
-DELETE http://localhost:3003/products/4
-
-### Edit Product by id
-
-PUT http://localhost:3003/products/4
+POST http://localhost:3003/products
 content-type: application/json
 
 {
-    "id": "004",
+    "id": "prod001",
+    "name": "Tablet",
+    "price": 1000,
+    "description": "Da aplle",
+    "imageUrl": "nao tem"
+}
+
+
+### DElete User By Id
+
+DELETE http://localhost:3003/users/4
+
+### Delete Product by id
+
+DELETE http://localhost:3003/products/prod001
+
+### Edit Product by id
+
+PUT http://localhost:3003/products/7
+content-type: application/json
+
+{
+    "id": "3",
     "name": "Regi",
     "price": 200,
     "description": "cheguei",
