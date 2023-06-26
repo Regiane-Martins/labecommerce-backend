@@ -94,3 +94,46 @@ CREATE TABLE
 
 
  -- editando por id
+ UPDATE products
+ SET description = 'Se'
+ WHERE id = 'p003';
+
+ --- criando tabela purchases
+
+ CREATE TABLE purchases (
+    id TEXT PRIMARY KEY UNIQUE NOT NULL, 
+    buyer TEXT NOT NULL,
+    total_price REAL NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (buyer) REFERENCES users(id)
+ );
+
+ -- inserindo pedidos
+
+ INSERT INTO purchases(id, buyer, total_price, created_at)
+VALUES
+('001', 'a005', 500, '2023-06-26'),
+('002', 'a005', 700, '2023-06-26'),
+('003', 'a010', 100, '2023-06-26'),
+('004', 'a015', 50, '2023-06-26');
+
+-- alterando preço total do pedido
+
+UPDATE purchases
+ SET total_price = 3000
+ WHERE id = '003';
+
+ -- exebindo resultados da compra
+
+ SELECT 
+ users.id AS usersId,
+ name,
+ email,
+ purchases.id AS purchasesId,
+ total_price,
+ purchases.created_at
+ FROM users
+ INNER JOIN purchases
+ ON purchases.buyer = users.id;
+
+
