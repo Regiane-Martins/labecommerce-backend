@@ -1,4 +1,4 @@
--- Active: 1687773676465@@127.0.0.1@3306
+-- Active: 1687978565703@@127.0.0.1@1433
 
 -- criando tabela users
 
@@ -135,5 +135,45 @@ UPDATE purchases
  FROM users
  INNER JOIN purchases
  ON purchases.buyer = users.id;
+
+
+-- criando tabela de relações de produtos e usuarios
+
+CREATE TABLE purchases_products (
+    purchase_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    quantity INTEGER NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchases(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+-- simulando compras
+
+INSERT INTO purchases_products(purchase_id, product_id, quantity)
+VALUES
+('001', 'p003', 2),
+('002', 'p010', 1),
+('003', 'p016', 2);
+
+-- consultando com as tabelas do purchases_products
+
+SELECT
+purchases.id AS purchasesID,
+purchases.buyer AS purchasesBuyer,
+purchases.total_price AS purchasesTotalPrice,
+purchases.created_at,
+products.id AS productsId,
+products.name,
+products.price AS productsPrice,
+products.description AS productsDescription,
+purchases_products.product_id AS purchasesProductsId,
+purchases_products.purchase_id AS purchasesProductsPurchaseId,
+purchases_products.quantity
+FROM purchases_products
+INNER JOIN products
+ON products.id = purchases_products.product_id
+INNER JOIN purchases
+ON purchases.id = purchases_products.purchase_id;
+
 
 
