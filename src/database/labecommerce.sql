@@ -1,4 +1,4 @@
--- Active: 1687978565703@@127.0.0.1@1433
+-- Active: 1688634867611@@127.0.0.1@3306
 
 -- criando tabela users
 
@@ -8,8 +8,10 @@ CREATE TABLE
         name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
-        created_at TEXT NOT NULL
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
+
+    DROP TABLE users;
 
 -- inserindo dados na tabela users
 
@@ -104,9 +106,11 @@ CREATE TABLE
     id TEXT PRIMARY KEY UNIQUE NOT NULL, 
     buyer TEXT NOT NULL,
     total_price REAL NOT NULL,
-    created_at TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (buyer) REFERENCES users(id)
  );
+
+ DROP TABLE purchases;
 
  -- inserindo pedidos
 
@@ -146,6 +150,8 @@ CREATE TABLE purchases_products (
     FOREIGN KEY (purchase_id) REFERENCES purchases(id),
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
+
+DROP TABLE purchases_products;
 
 -- simulando compras
 

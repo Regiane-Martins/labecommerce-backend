@@ -8,6 +8,7 @@ import express, { Request, Response } from "express";
 import { users, products } from "./database";
 import { TProducts, TUser } from "./types";
 import cors from "cors";
+import { db } from "./database/knex"
 
 const app = express();
 app.use(express.json());
@@ -23,11 +24,13 @@ app.get("/ping", (req: Request, res: Response) => {
   res.send("pong");
 });
 
+
 //Get All Users
 
-app.get("/users", (req: Request, res: Response) => {
+app.get("/users", async (req: Request, res: Response) => {
   try {
-    res.status(200).send(users);
+    const result = await db.raw(`SELECT * FROM users`)
+    res.status(200).send(result);
   } catch (error) {
     res.status(500).send("Usuário não localizado!");
   }
@@ -35,31 +38,24 @@ app.get("/users", (req: Request, res: Response) => {
 
 //Get All Products
 
-app.get("/products", (req: Request, res: Response) => {
+app.get("/products", async (req: Request, res: Response) => {
   try {
     const { name } = req.query;
-    let productFilter = [];
 
-    if (name !== undefined) {
-      if (name !== "string") {
-        res.statusCode = 400;
-        throw new Error("Nome deve ser uma string!");
-      }
-      if (name.length < 1) {
-        res.statusCode = 400;
-        throw new Error("Nome deve ter mais de um caracter.");
-      }
-    }
-    if (name) {
-      const filterName = name.toString().toLowerCase();
-      productFilter = products.filter((product) =>
-        product.name.toLowerCase().includes(filterName)
-      );
+    console.log(name)
+
+    if (name === undefined || name === "") {
+      const result = await db.raw(`SELECT * FROM products`)
+
+      res.status(200).send(result)
     } else {
-      productFilter = products;
-    }
+      const result = await db.raw(`
+        SELECT * FROM products
+        WHERE name LIKE '%${name}%'
+      `)
 
-    res.status(200).send(productFilter);
+      res.status(200).send(result);
+    }
   } catch (error) {
     if (error instanceof Error) {
       res.send(error.message);
@@ -69,19 +65,49 @@ app.get("/products", (req: Request, res: Response) => {
   }
 });
 
+
+// Get Product By Id
+
+app.get('/products/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+
+    if (id !== undefined) {
+      if (typeof id !== "string") {
+        res.statusCode = 400;
+        throw new Error("Íd' deve ser em formato de texto!")
+      }
+      if (id.length < 1) {
+        res.statusCode = 400;
+        throw new Error("'Id' deve conter mais de um carater!")
+      }
+      const [product] = await db.raw(`
+       SELECT * FROM products
+       WHERE id = "${id}"
+      `
+      )
+      if (!product) {
+        res.statusCode = 404
+        throw new Error("'id' não encontrada")
+      }
+    }
+
+  } catch (error) {
+
+  }
+})
+
 // create user
 
-app.post("/users", (req: Request, res: Response) => {
+app.post("/users", async (req: Request, res: Response) => {
   try {
-    const { id, name, email, password } = req.body;
+    const { id, name, email, password} = req.body;
 
-    const newUser: TUser = {
-      id,
-      name,
-      email,
-      password,
-      createdAt: new Date().toISOString(),
-    };
+    const newUser = await db.raw(`
+    INSERT INTO users (id, name, email, password)
+    VALUES
+    ("${id}", "${name}", "${email}", "${password}")
+    `)
 
     const userById = users.findIndex((user) => user.id === id);
 
@@ -112,17 +138,15 @@ app.post("/users", (req: Request, res: Response) => {
 
 // create products
 
-app.post("/products", (req: Request, res: Response) => {
+app.post("/products", async (req: Request, res: Response) => {
   try {
-    const { id, name, price, description, imageUrl } = req.body;
+    const { id, name, price, description, image_url } = req.body;
 
-    const newProduct: TProducts = {
-      id,
-      name,
-      price,
-      description,
-      imageUrl,
-    };
+    const newProduct = await db.raw(`
+      INSERT INTO products (id, name, price, description, image_url)
+      VALUES
+      ("${id}","${name}", "${price}", "${description}", "${image_url}")
+    `)
 
     const productById = products.findIndex((product) => product.id === id);
     if (productById >= 0) {
@@ -141,33 +165,62 @@ app.post("/products", (req: Request, res: Response) => {
   }
 });
 
+// Create Purchase
+
+app.post('/purchases', async (req: Request, res: Response)=>{
+  try {
+    const {id, buyer, total_price} = req.body
+
+    const newCompra = await db.raw(`
+    INSERT INTO purchases
+    VALUES
+    ("${id}","${buyer}", "${total_price}")
+    
+    `)
+    const productById = products.findIndex((product) => product.id === id);
+    if (productById >= 0) {
+      res.statusCode = 400;
+      throw new Error("Id já cadastrado, favor enserir um novo 'id'!");
+    }
+    products.push(newCompra);
+    res.status(200).send("Pedido realizado com sucesso.")
+
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message);
+    } else {
+      res.status(500).send("Erro desconhecido.");
+    }
+  }
+})
+
 //Delete User by id
 
 app.delete("/users/:id", (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-  const userById = users.findIndex((user) => user.id === id);
-  if(userById !== undefined){
-    if(userById < 0){
-      res.statusCode=400
-      throw new Error("Usuário não encontrado!")
+    const userById = users.findIndex((user) => user.id === id);
+    if (userById !== undefined) {
+      if (userById < 0) {
+        res.statusCode = 400
+        throw new Error("Usuário não encontrado!")
+      }
+    }
+
+    users.splice(userById, 1);
+
+    console.log(users);
+
+    res.status(200).send("User apagado com sucesso!");
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    } else {
+      res.status(500).send("Erro desconhecido.")
     }
   }
 
-  users.splice(userById, 1);
-
-  console.log(users);
-
-  res.status(200).send("User apagado com sucesso!");
-  } catch (error) {
-    if(error instanceof Error){
-      res.send(error.message)
-  }else{
-      res.status(500).send("Erro desconhecido.")
-  }
-  }
-  
 });
 
 //Delete Product by id
@@ -175,27 +228,27 @@ app.delete("/users/:id", (req: Request, res: Response) => {
 app.delete("/products/:id", (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-  const productById = products.findIndex((product) => product.id === id);
-  if(productById !== undefined){
-    if(productById < 0){
-      res.statusCode=400
-      throw new Error("Produto não encontrado!")
+    const productById = products.findIndex((product) => product.id === id);
+    if (productById !== undefined) {
+      if (productById < 0) {
+        res.statusCode = 400
+        throw new Error("Produto não encontrado!")
+      }
+    }
+
+    products.splice(productById, 1);
+
+    console.log(products);
+
+    res.status(200).send("Produto exluido com sucesso!");
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    } else {
+      res.status(500).send("Erro desconhecido.")
     }
   }
 
-  products.splice(productById, 1);
-
-  console.log(products);
-
-  res.status(200).send("Produto exluido com sucesso!");
-  } catch (error) {
-    if(error instanceof Error){
-      res.send(error.message)
-  }else{
-      res.status(500).send("Erro desconhecido.")
-  }
-  }
-  
 });
 
 //Edit Product by id
@@ -204,35 +257,35 @@ app.put("/products/:id", (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-  const newId = req.body.id as string;
-  const newName = req.body.name as string;
-  const newPrice = req.body.price as number;
-  const newDescription = req.body.description as string;
-  const newImage = req.body.imageUrl as string;
+    const newId = req.body.id as string;
+    const newName = req.body.name as string;
+    const newPrice = req.body.price as number;
+    const newDescription = req.body.description as string;
+    const newImage = req.body.imageUrl as string;
 
-  const productById = products.findIndex((product) => product.id === id);
-  if(productById !== undefined){
-    if(productById < 0){
-      res.statusCode=400
-      throw new Error("Produto não encontrado, favor verificar dados!")
+    const productById = products.findIndex((product) => product.id === id);
+    if (productById !== undefined) {
+      if (productById < 0) {
+        res.statusCode = 400
+        throw new Error("Produto não encontrado, favor verificar dados!")
+      }
     }
-  }
 
-  products[productById].id = newId;
-  products[productById].name = newName;
-  products[productById].price = newPrice;
-  products[productById].description = newDescription;
-  products[productById].imageUrl = newImage;
+    products[productById].id = newId;
+    products[productById].name = newName;
+    products[productById].price = newPrice;
+    products[productById].description = newDescription;
+    products[productById].imageUrl = newImage;
 
-  console.log(products);
+    console.log(products);
 
-  res.status(200).send("Produto atualizado com sucesso")
+    res.status(200).send("Produto atualizado com sucesso")
   } catch (error) {
-    if(error instanceof Error){
+    if (error instanceof Error) {
       res.send(error.message)
-  }else{
+    } else {
       res.status(500).send("Erro desconhecido.")
-  }
+    }
   }
   ;
 });
