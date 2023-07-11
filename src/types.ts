@@ -22,3 +22,13 @@ export type TPurchaseProduct = {
 export function isProductsPurchase(items: any): items is TPurchaseProduct[] {
     return Array.isArray(items) && items.every(item => item && typeof item.id === 'string' && typeof item.quantity === 'number');
 }
+
+export type TPurchase = {
+    purchaseId: string;
+    purchaseBuyer: string;
+    buyerName: string;
+    buyerEmail: string;
+    totalPrice: number;
+    createdAt: string;
+    products: [],
+}
