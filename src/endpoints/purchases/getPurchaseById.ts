@@ -1,5 +1,5 @@
-import { TPurchase } from "../../../types";
-import { db } from "../../knex";
+import { db } from "../../database/knex";
+import { TPurchase } from "../../types";
 import express, { Request, Response } from "express";
 
 export const getPurchaseById = async (req: Request, res: Response) => {

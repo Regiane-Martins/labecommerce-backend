@@ -17,7 +17,7 @@
 
 * Estrutura das pastas
 
-![Layout](./src/img/layout-pastas.png)
+![Layout](./src/img/layout.png)
 
 # Requisiçoes (Paths)
 
@@ -39,18 +39,137 @@
 
 
 * `GET /users`: Retorna todos usuários.
+```json
+[
+  {
+    "id": "a005",
+    "name": "Regiane",
+    "email": "regiane@email.com",
+    "password": "12345",
+    "created_at": "2023-06-19"
+  },
+  {
+    "id": "a010",
+    "name": "Elvis",
+    "email": "elvis@email.com",
+    "password": "45678",
+    "created_at": "2023-06-19"
+  },
+  {
+    "id": "a015",
+    "name": "Miguel",
+    "email": "miguel@email.com",
+    "password": "56748",
+    "created_at": "2023-06-19"
+  }
+]
+```
+
 * `POST /users`: Cadastra um novo usuário.
+
+```json
+{
+  "message": "Cadastro realizado com sucesso!"
+}
+```
 
 ### Requisições de produtos
 * `GET /products`: Retorna todos os produtos.
+```json
+[
+  {
+    "id": "p003",
+    "name": "Iphone",
+    "price": 2000,
+    "description": "13 Pro",
+    "image_url": "a pesquisar"
+  },
+  {
+    "id": "p006",
+    "name": "Nike",
+    "price": 400,
+    "description": "Air Force",
+    "image_url": "a pesquisar"
+  },
+  {
+    "id": "p010",
+    "name": "Xbox",
+    "price": 1600,
+    "description": "Series S",
+    "image_url": "a pesquisar"
+  },
+  {
+    "id": "p0021",
+    "name": "Lg",
+    "price": 3000,
+    "description": "Tv 50'",
+    "image_url": "a pesquisar"
+  },
+  {
+    "id": "p016",
+    "name": "Nike",
+    "price": 390,
+    "description": "Jordan",
+    "image_url": "a pesquisar"
+  }
+]
+```
 * `POST /products`: Cadastra um novo produto.
+```json
+{
+  "message": "Produto cadastrado com sucesso!"
+}
+```
 * `PUT /products/:id`: Edita produtos pelo o Id.
+```json
+{
+  "message": "Produto atualizado com sucesso"
+}
+```
 
 ### Requisições de compras
 * `POST /purchases`: Cria um pedido de compra.
+```json
+{
+  "message": "Pedido realizado com sucesso."
+}
+```
 * `DELETE /purchases/:id`: Deleta uma compra pelo Id.
-* `GET /purchases/:id`: Busca compra pelo Id.
 
+```json
+{
+  "message": "Pedido cancelado com sucesso!"
+}
+```
+* `GET /purchases/:id`: Busca compra pelo Id.
+```json
+{
+  "purchaseId": "c028",
+  "purchaseBuyer": "a010",
+  "buyerName": "Elvis",
+  "buyerEmail": "elvis@email.com",
+  "total_price": 4800,
+  "created_at": "2023-07-11 17:51:03",
+  "products": [
+    {
+      "productId": "p006",
+      "name": "Nike",
+      "price": 400,
+      "description": "Air Force",
+      "image_url": "a pesquisar",
+      "quantity": 4
+    },
+    {
+      "productId": "p010",
+      "name": "Xbox",
+      "price": 1600,
+      "description": "Series S",
+      "image_url": "a pesquisar",
+      "quantity": 2
+    }
+  ]
+}
+```
 
 
 # Documentação do Postman

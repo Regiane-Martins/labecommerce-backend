@@ -1,13 +1,13 @@
 import express, { Request, Response } from "express";
-import { getAllUsers } from "./database/endpoints/users/getAllUsers";
+import { getAllUsers } from "./endpoints/users/getAllUsers";
 import cors from "cors";
-import { getAllProducts } from "./database/endpoints/products/getAllProducts";
-import { createUser } from "./database/endpoints/users/createUser";
-import { createProduct } from "./database/endpoints/products/createProducts";
-import { createPurchase } from "./database/endpoints/purchases/createPurchase";
-import { deletePurchaseById } from "./database/endpoints/purchases/deletePurchaseById";
-import { editProductsById } from "./database/endpoints/products/editProductsById";
-import { getPurchaseById } from "./database/endpoints/purchases/getPurchaseById";
+import { getAllProducts } from "./endpoints/products/getAllProducts";
+import { createUser } from "./endpoints/users/createUser";
+import { createProduct } from "./endpoints/products/createProducts";
+import { createPurchase } from "./endpoints/purchases/createPurchase";
+import { deletePurchaseById } from "./endpoints/purchases/deletePurchaseById";
+import { editProductsById } from "./endpoints/products/editProductsById";
+import { getPurchaseById } from "./endpoints/purchases/getPurchaseById";
 
 const app = express();
 
@@ -17,12 +17,6 @@ app.use(cors());
 app.listen(3003, () => {
   console.log("Servidor rodando na porta 3003");
 });
-
-// Ping
-app.get("/ping", (req: Request, res: Response) => {
-  res.send("pong");
-});
-
 
 app.get('/users', getAllUsers)
 app.post('/users', createUser)

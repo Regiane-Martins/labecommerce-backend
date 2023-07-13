@@ -1,5 +1,5 @@
-import { TPurchaseProduct, isProductsPurchase } from "../../../types";
-import { db } from "../../knex";
+import { db } from "../../database/knex";
+import { TPurchaseProduct, isProductsPurchase } from "../../types";
 import express, { Request, Response } from "express";
 
 
@@ -38,7 +38,7 @@ export const createPurchase = async (req: Request, res: Response) => {
             })
         }
 
-        res.status(200).send("Pedido realizado com sucesso.")
+        res.status(200).send({message:"Pedido realizado com sucesso."})
     } catch (error) {
         if (error instanceof Error) {
             res.send(error.message);
