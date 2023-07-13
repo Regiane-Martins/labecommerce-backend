@@ -1,5 +1,6 @@
-import { db } from "../../knex";
+
 import express, { Request, Response } from "express";
+import { db } from "../../database/knex";
 
 export const deletePurchaseById = async (req: Request, res: Response) => {
     try {
@@ -15,7 +16,7 @@ export const deletePurchaseById = async (req: Request, res: Response) => {
       await db("purchases_products").del().where({ purchase_id: id })
       await db("purchases").del().where({ id: id })
   
-      res.status(200).send("Pedido cancelado com sucesso!");
+      res.status(200).send({message:"Pedido cancelado com sucesso!"});
     } catch (error) {
       if (error instanceof Error) {
         res.send(error.message)

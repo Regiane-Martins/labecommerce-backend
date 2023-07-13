@@ -1,5 +1,6 @@
-import { db } from "../../knex";
+
 import express, { Request, Response } from "express";
+import { db } from "../../database/knex";
 
 export const editProductsById = async (req: Request, res: Response) => {
     try {
@@ -27,7 +28,7 @@ export const editProductsById = async (req: Request, res: Response) => {
         throw new Error("'id' não encontrada")
       }
   
-      res.status(200).send("Produto atualizado com sucesso")
+      res.status(200).send({message:"Produto atualizado com sucesso"})
     } catch (error) {
       if (error instanceof Error) {
         res.send(error.message)
